@@ -63,4 +63,4 @@ class Player:
         else:
             self.right_animation.center_x = self.current_animation.center_x
             self.right_animation.center_y = self.current_animation.center_y            
-            self.current_animation = self.right_animation      
+            self.current_animation = self.right_animation
