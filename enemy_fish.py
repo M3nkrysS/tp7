@@ -55,18 +55,19 @@ class EnemyFish(FishAnimation):
     def __init__(self, direction, spawn_point):
         # Randomize the fish color and size
         fish_color = randint(1, 5)
-        fish_scale = choices(FISH_SCALE, weights=FISH_SCALE_WEIGHT, k=1)
+        self.fish_scale = choices(FISH_SCALE, weights=FISH_SCALE_WEIGHT, k=1)
+        self.current_scale = FISH_SIZE_TO_SCALE[self.fish_scale[0]]
         flipped = False if direction == Direction.LEFT else True
 
         super().__init__(
             FISH_COLOR_TO_PATH[fish_color], 
             flipped, 
-            FISH_SIZE_TO_SCALE[fish_scale[0]]
+            FISH_SIZE_TO_SCALE[self.fish_scale[0]]
         )
 
-        if fish_scale[0] in FISH_SCALE[0:3]:
+        if self.fish_scale[0] in FISH_SCALE[0:3]:
             self.change_x = EnemyFish.SMALL_ENEMY_SPEED
-        elif fish_scale[0] in FISH_SCALE[4:5]:
+        elif self.fish_scale[0] in FISH_SCALE[4:5]:
             self.change_x = EnemyFish.MEDIUM_ENEMY_SPEED
         else:
             self.change_x = EnemyFish.LARGE_ENEMY_SPEED

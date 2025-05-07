@@ -20,9 +20,10 @@ class Player:
     MOVEMENT_SPEED = 5.0
     PLAYER_LIVES = 3
     
-    def __init__(self, spritesheet_path):
-        self.left_animation = FishAnimation(spritesheet_path, scale=0.10)
-        self.right_animation = FishAnimation(spritesheet_path, flip=True, scale=0.10)
+    def __init__(self, spritesheet_path, scale):
+        self.scale = scale
+        self.left_animation = FishAnimation(spritesheet_path, scale=self.scale)
+        self.right_animation = FishAnimation(spritesheet_path, flip=True, scale=self.scale)
         self.current_animation = None
 
         self.direction = Direction.LEFT
@@ -37,7 +38,8 @@ class Player:
     def draw(self):
         self.animation_list.draw()
 
-    def update(self, delta_time):      
+    def update(self, delta_time):
+        self.current_animation.scale = self.scale
         self.current_animation.center_x += self.current_animation.change_x
         self.current_animation.center_y += self.current_animation.change_y
 

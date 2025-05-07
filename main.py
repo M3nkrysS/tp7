@@ -11,6 +11,7 @@ from game_time import GameElapsedTime
 from player import Player, Direction
 from enemy_fish import EnemyFish
 import game_constants as gc
+import time
 
 
 class MyGame(arcade.Window):
@@ -35,6 +36,8 @@ class MyGame(arcade.Window):
         self.player_move_down = False
         self.player_move_left = False
         self.player_move_right = False
+        self.immune = False
+        self.immune_time = 0
 
         self.enemy_list = None
 
@@ -48,7 +51,7 @@ class MyGame(arcade.Window):
         Configurer les variables de votre jeu ici. Il faut appeler la méthode une nouvelle
         fois si vous recommencer une nouvelle partie.
         """
-        self.player = Player("assets/2dfish/spritesheets/__cartoon_fish_06_yellow_idle.png")
+        self.player = Player("assets/2dfish/spritesheets/__cartoon_fish_06_yellow_idle.png", 0.10)
         self.player.current_animation.center_x = 200
         self.player.current_animation.center_y = 200
 
@@ -63,7 +66,7 @@ class MyGame(arcade.Window):
         self.gui_camera = arcade.camera.Camera2D()
 
         # Each two seconds, a new enemy fish will spawn.
-        arcade.schedule(self.spawn_enemy_fish, 2)
+        arcade.schedule(self.spawn_enemy_fish, 1)
 
     def spawn_enemy_fish(self, delta_time):
         """
@@ -96,14 +99,17 @@ class MyGame(arcade.Window):
             r = arcade.rect.XYWH(gc.SCREEN_WIDTH // 2, gc.SCREEN_HEIGHT - 25, gc.SCREEN_WIDTH, 50)
             arcade.draw.draw_rect_outline(r,  arcade.color.BLEU_DE_FRANCE)
 
-            arcade.draw_text("Lives :", 5, gc.SCREEN_HEIGHT - 35, arcade.color.WHITE_SMOKE, 20, width=100, align="center")
+            lives = arcade.Text(f"Lives :{self.player.lives}", 5, gc.SCREEN_HEIGHT - 35, arcade.color.WHITE_SMOKE, 20, width=100, align="center")
 
-            arcade.draw_text(
+            time_text = arcade.Text(
                 f"Time played : {self.game_timer.get_time_string()}",
                 gc.SCREEN_WIDTH - 350,
                 gc.SCREEN_HEIGHT - 35,
                 arcade.color.WHITE_SMOKE,
                 20, width=400, align="center")
+
+            lives.draw()
+            time_text.draw()
 
     def on_update(self, delta_time):
         """
@@ -118,6 +124,24 @@ class MyGame(arcade.Window):
 
         self.player.update(delta_time)
         self.enemy_list.update()
+        self.score_system()
+
+    def score_system(self):
+        if time.time() - self.immune_time > 3000:
+            self.immune = False
+        collision = arcade.check_for_collision_with_list(self.player.current_animation, self.enemy_list)
+        if collision:
+            print("true")
+            for enemy in collision:
+                if self.player.scale >= enemy.current_scale:
+                    enemy.remove_from_sprite_lists()
+                    self.player.scale *= 1.1
+                else:
+                    if not self.immune:
+                        self.player.lives -= 1
+                        self.immune = True
+                        self.immune_time = time.time()
+
 
     def update_player_speed(self):
         """

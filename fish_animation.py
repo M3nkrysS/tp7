@@ -17,7 +17,7 @@ class FishAnimation(arcade.Sprite):
     def __init__(self, spritesheet_path, flip=False, scale=0.35):
         super().__init__()
 
-        spritesheet = arcade.load_spritesheet(spritesheet_path)#, 498, 327, 3, 12)
+        spritesheet = arcade.load_spritesheet(spritesheet_path)  # , 498, 327, 3, 12)
         textures = spritesheet.get_texture_grid((498, 327), 3, 12)
         if flip:
             flipped_textures = []
