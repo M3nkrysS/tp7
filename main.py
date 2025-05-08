@@ -7,6 +7,7 @@ import random
 
 import arcade
 
+import game_time
 from game_time import GameElapsedTime
 from player import Player, Direction
 from enemy_fish import EnemyFish
@@ -38,6 +39,9 @@ class MyGame(arcade.Window):
         self.player_move_right = False
         self.immune = False
         self.immune_time = 0
+
+        self.score = 0
+        self.score_multiplier = 0
 
         self.enemy_list = None
 
@@ -99,7 +103,7 @@ class MyGame(arcade.Window):
             r = arcade.rect.XYWH(gc.SCREEN_WIDTH // 2, gc.SCREEN_HEIGHT - 25, gc.SCREEN_WIDTH, 50)
             arcade.draw.draw_rect_outline(r,  arcade.color.BLEU_DE_FRANCE)
 
-            lives = arcade.Text(f"Lives :{self.player.lives}", 5, gc.SCREEN_HEIGHT - 35, arcade.color.WHITE_SMOKE, 20, width=100, align="center")
+            lives = arcade.Text(f"Lives : {self.player.lives}", 5, gc.SCREEN_HEIGHT - 35, arcade.color.WHITE_SMOKE, 20, width=100, align="center")
 
             time_text = arcade.Text(
                 f"Time played : {self.game_timer.get_time_string()}",
@@ -108,8 +112,12 @@ class MyGame(arcade.Window):
                 arcade.color.WHITE_SMOKE,
                 20, width=400, align="center")
 
+            score_text = arcade.Text(f"Score : {self.score}", gc.SCREEN_WIDTH // 2, gc.SCREEN_HEIGHT - 35,
+                                     arcade.color.WHITE_SMOKE, 20, align="center")
+
             lives.draw()
             time_text.draw()
+            score_text.draw()
 
     def on_update(self, delta_time):
         """
@@ -127,21 +135,36 @@ class MyGame(arcade.Window):
         self.score_system()
 
     def score_system(self):
-        if time.time() - self.immune_time > 3000:
+        if time.time() - self.immune_time > 1:
             self.immune = False
         collision = arcade.check_for_collision_with_list(self.player.current_animation, self.enemy_list)
+        self.score_multiplier = int(game_time.GameElapsedTime().accumulate())
         if collision:
             print("true")
             for enemy in collision:
                 if self.player.scale >= enemy.current_scale:
                     enemy.remove_from_sprite_lists()
-                    self.player.scale *= 1.1
+                    if self.player.scale - enemy.current_scale <= self.player.scale / 5:  # poisson + gros
+                        self.player.scale *= 1.05
+                        self.score += 10
+                    if self.player.scale - enemy.current_scale <= self.player.scale / 4:
+                        self.player.scale *= 1.05
+                        self.score += 10
+                    if self.player.scale - enemy.current_scale <= self.player.scale / 3:
+                        self.player.scale *= 1.05
+                        self.score += 10
+                    if self.player.scale - enemy.current_scale <= self.player.scale / 2:  # poisson - gros
+                        self.player.scale *= 1.05
+                        self.score += 10
+                    else:
+                        self.player.scale *= 1.02
+                        self.score += 5
+
                 else:
                     if not self.immune:
                         self.player.lives -= 1
                         self.immune = True
                         self.immune_time = time.time()
-
 
     def update_player_speed(self):
         """
