@@ -43,6 +43,7 @@ class MyGame(arcade.Window):
         self.immune_time = 0
 
         self.score = 0
+        self.true_score = 0
         self.score_multiplier = 0
 
         self.enemy_list = None
@@ -51,7 +52,7 @@ class MyGame(arcade.Window):
         self.gui_camera = None
 
         self.game_timer = GameElapsedTime()
-        self.current_time = game_time.GameElapsedTime().accumulate()
+        self.start_game_timer = time.time()
 
     def setup(self):
         """
@@ -94,6 +95,7 @@ class MyGame(arcade.Window):
         de votre jeu à l'écran.
         """
         self.clear()
+        self.score = self.true_score * self.score_multiplier
 
         # Game camera rendering
         with self.default_camera.activate():
@@ -115,12 +117,16 @@ class MyGame(arcade.Window):
                 arcade.color.WHITE_SMOKE,
                 20, width=400, align="center")
 
-            score_text = arcade.Text(f"Score : {self.score}", gc.SCREEN_WIDTH // 2, gc.SCREEN_HEIGHT - 35,
+            score_text = arcade.Text(f"Score : {int(self.score)}", gc.SCREEN_WIDTH // 2, gc.SCREEN_HEIGHT - 35,
                                      arcade.color.WHITE_SMOKE, 20, align="center")
+
+            multiplier_text = arcade.Text(f"Multiplier : {round(self.score_multiplier, 2)}", gc.SCREEN_WIDTH // 2 - 200,
+                                          gc.SCREEN_HEIGHT - 35, arcade.color.WHITE_SMOKE, 20, align="center")
 
             lives.draw()
             time_text.draw()
             score_text.draw()
+            multiplier_text.draw()
 
     def on_update(self, delta_time):
         """
@@ -141,7 +147,7 @@ class MyGame(arcade.Window):
         if time.time() - self.immune_time > 1:
             self.immune = False
         collision = arcade.check_for_collision_with_list(self.player.current_animation, self.enemy_list)
-        self.score_multiplier = int(self.current_time)
+        self.score_multiplier = int(game_time.GameElapsedTime().start_time - self.start_game_timer) / 100 + 1
         if collision:
             print("true")
             for enemy in collision:
@@ -149,27 +155,25 @@ class MyGame(arcade.Window):
                     enemy.remove_from_sprite_lists()
                     if self.player.scale - enemy.current_scale <= self.player.scale / 5:  # poisson + gros
                         self.player.scale *= 1.05
-                        self.score += 10
+                        self.true_score += 10
                     if self.player.scale - enemy.current_scale <= self.player.scale / 4:
                         self.player.scale *= 1.05
-                        self.score += 10
+                        self.true_score += 10
                     if self.player.scale - enemy.current_scale <= self.player.scale / 3:
                         self.player.scale *= 1.05
-                        self.score += 10
+                        self.true_score += 10
                     if self.player.scale - enemy.current_scale <= self.player.scale / 2:  # poisson - gros
                         self.player.scale *= 1.05
-                        self.score += 10
+                        self.true_score += 10
                     else:
                         self.player.scale *= 1.02
-                        self.score += 5
+                        self.true_score += 5
 
                 else:
                     if not self.immune:
                         self.player.lives -= 1
                         self.immune = True
                         self.immune_time = time.time()
-        # self.score *= self.score_multiplier
-        print(self.score_multiplier)
 
     def update_player_speed(self):
         """
