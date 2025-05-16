@@ -7,6 +7,8 @@ import random
 
 import arcade
 
+from time import time
+
 import game_time
 from game_time import GameElapsedTime
 from player import Player, Direction
@@ -49,6 +51,7 @@ class MyGame(arcade.Window):
         self.gui_camera = None
 
         self.game_timer = GameElapsedTime()
+        self.current_time = game_time.GameElapsedTime().accumulate()
 
     def setup(self):
         """
@@ -70,7 +73,7 @@ class MyGame(arcade.Window):
         self.gui_camera = arcade.camera.Camera2D()
 
         # Each two seconds, a new enemy fish will spawn.
-        arcade.schedule(self.spawn_enemy_fish, 1)
+        arcade.schedule(self.spawn_enemy_fish, 2)
 
     def spawn_enemy_fish(self, delta_time):
         """
@@ -138,7 +141,7 @@ class MyGame(arcade.Window):
         if time.time() - self.immune_time > 1:
             self.immune = False
         collision = arcade.check_for_collision_with_list(self.player.current_animation, self.enemy_list)
-        self.score_multiplier = int(game_time.GameElapsedTime().accumulate())
+        self.score_multiplier = int(self.current_time)
         if collision:
             print("true")
             for enemy in collision:
@@ -165,6 +168,8 @@ class MyGame(arcade.Window):
                         self.player.lives -= 1
                         self.immune = True
                         self.immune_time = time.time()
+        # self.score *= self.score_multiplier
+        print(self.score_multiplier)
 
     def update_player_speed(self):
         """
