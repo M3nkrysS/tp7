@@ -46,6 +46,11 @@ class MyGame(arcade.Window):
         self.score = 0
         self.true_score = 0
         self.score_multiplier = 0
+        with open("High_score_file.txt") as score_file_check_if_empty:
+            full_file = score_file_check_if_empty.read()
+            if not full_file:
+                with open("High_score_file.txt", "w") as score_file_fill:
+                    score_file_fill.write("0")
 
         self.enemy_list = None
 
