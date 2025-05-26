@@ -42,6 +42,7 @@ class MyGame(arcade.Window):
         self.immune = False
         self.immune_time = 0
 
+        # Score related attribute
         self.score = 0
         self.true_score = 0
         self.score_multiplier = 0
@@ -174,6 +175,11 @@ class MyGame(arcade.Window):
                         self.player.lives -= 1
                         self.immune = True
                         self.immune_time = time.time()
+
+        with open("High_score_file.txt") as score_file_read:
+            if self.score > int(score_file_read.read()):
+                with open("High_score_file.txt", "w") as score_file_write:
+                    score_file_write.write(str(int(self.score)))
 
     def update_player_speed(self):
         """
