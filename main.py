@@ -1,4 +1,6 @@
 """
+Lucas Beaudry Tinkler
+Gr : 401
 Simple jeu fait avec arcade.
 Le jeu consiste a ce que notre poisson mange des poissons plus petits que lui pour grossir.
 L'utilisateur doit aussi éviter les poissons plus gros afin de ne pas perdre de vie.
@@ -7,17 +9,17 @@ import random
 
 import arcade
 
-from time import time
 
 import game_time
 from game_time import GameElapsedTime
 from player import Player, Direction
 from enemy_fish import EnemyFish
 import game_constants as gc
+import menu_view
 import time
 
 
-class MyGame(arcade.Window):
+class GameView(arcade.View):
     """
     La classe principale de l'application
 
@@ -25,8 +27,8 @@ class MyGame(arcade.Window):
     Si vous en avez besoin, remplacer le mot clé "pass" par votre propre code.
     """
 
-    def __init__(self, width, height, title):
-        super().__init__(width, height, title)
+    def __init__(self):
+        super().__init__()
 
         arcade.set_background_color(arcade.color.BLUE_YONDER)
 
@@ -54,7 +56,6 @@ class MyGame(arcade.Window):
 
         self.enemy_list = None
 
-        self.game_camera = None
         self.gui_camera = None
 
         self.game_timer = GameElapsedTime()
@@ -104,10 +105,9 @@ class MyGame(arcade.Window):
         self.score = self.true_score * self.score_multiplier
 
         # Game camera rendering
-        with self.default_camera.activate():
-            self.back_ground_list.draw()
-            self.player.draw()
-            self.enemy_list.draw()
+        self.back_ground_list.draw()
+        self.player.draw()
+        self.enemy_list.draw()
 
         # Gui camera rendering
         with self.gui_camera.activate():
@@ -230,6 +230,9 @@ class MyGame(arcade.Window):
             self.player_move_down = True
             self.update_player_speed()
 
+        if key == arcade.key.ESCAPE:
+            self.game_camera = menu_view.MenuView
+
     def on_key_release(self, key, key_modifiers):
         """
         Méthode invoquée à chaque fois que l'usager enlève son doigt d'une touche.
@@ -251,10 +254,14 @@ class MyGame(arcade.Window):
             self.update_player_speed()
 
 
+GAME_CAM = GameView
+
+
 def main():
     """ Main method """
-    game = MyGame(gc.SCREEN_WIDTH, gc.SCREEN_HEIGHT, gc.SCREEN_TITLE)
-    game.setup()
+    window = arcade.Window(gc.SCREEN_WIDTH, gc.SCREEN_HEIGHT, "Instruction and Game Over Views Example")
+    view = GameView()
+    window.show_view(view)
     arcade.run()
 
 
