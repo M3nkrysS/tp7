@@ -11,3 +11,6 @@ class MenuView(arcade.View):
         n_g = arcade.Text("New Game", gc.SCREEN_WIDTH / 2, gc.SCREEN_HEIGHT * 0.75, arcade.color.WHITE_SMOKE)
 
         n_g.draw()
+
+    def on_mouse_press(self, x: int, y: int, button: int, modifiers: int):
+        if

@@ -56,11 +56,14 @@ class GameView(arcade.View):
 
         self.enemy_list = None
 
-        self.game_camera = GameView()
+        self.game_camera = menu_view.MenuView()
         self.gui_camera = None
 
         self.game_timer = GameElapsedTime()
         self.start_game_timer = time.time()
+
+    def on_show_view(self) -> None:
+        self.window.background_color = arcade.color.BLACK
 
     def setup(self):
         """
@@ -259,8 +262,9 @@ def main():
     """ Main method """
     window = arcade.Window(gc.SCREEN_WIDTH, gc.SCREEN_HEIGHT, "Instruction and Game Over Views Example")
     view = GameView().game_camera
-    view.setup()
     window.show_view(view)
+    if view == GameView():
+        view.setup()
     arcade.run()
 
 
