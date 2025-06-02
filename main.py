@@ -56,6 +56,7 @@ class GameView(arcade.View):
 
         self.enemy_list = None
 
+        self.game_camera = GameView()
         self.gui_camera = None
 
         self.game_timer = GameElapsedTime()
@@ -254,13 +255,11 @@ class GameView(arcade.View):
             self.update_player_speed()
 
 
-GAME_CAM = GameView
-
-
 def main():
     """ Main method """
     window = arcade.Window(gc.SCREEN_WIDTH, gc.SCREEN_HEIGHT, "Instruction and Game Over Views Example")
-    view = GameView()
+    view = GameView().game_camera
+    view.setup()
     window.show_view(view)
     arcade.run()
 

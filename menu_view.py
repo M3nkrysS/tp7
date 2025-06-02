@@ -1,6 +1,7 @@
 import arcade
 import game_constants as gc
 
+
 class MenuView(arcade.View):
     def on_show_view(self):
         self.window.background_color = arcade.color.BLACK
