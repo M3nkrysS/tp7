@@ -6,14 +6,13 @@ from arcade.gui import (
     UIView,
 )
 
-import main
+from game_view import GameView
 
 # Preload textures, because they are mostly used multiple times, so they are not
 # loaded multiple times
 TEX_RED_BUTTON_NORMAL = arcade.load_texture(":resources:gui_basic_assets/button/red_normal.png")
 TEX_RED_BUTTON_HOVER = arcade.load_texture(":resources:gui_basic_assets/button/red_hover.png")
 TEX_RED_BUTTON_PRESS = arcade.load_texture(":resources:gui_basic_assets/button/red_press.png")
-
 
 
 class MenuView(arcade.View):
@@ -39,7 +38,10 @@ class MenuView(arcade.View):
         # add a button to switch to the blue view
         @button.event("on_click")
         def on_click(event):
-            self.window.show_view(main.GameView())
+            pass
+            game_view = GameView()
+            game_view.setup()
+            self.window.show_view(game_view)
 
     def on_show_view(self) -> None:
         self.ui.enable()
