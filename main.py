@@ -262,9 +262,9 @@ def main():
     """ Main method """
     window = arcade.Window(gc.SCREEN_WIDTH, gc.SCREEN_HEIGHT, "Instruction and Game Over Views Example")
     view = GameView().game_camera
+    game = GameView()
+    game.setup()
     window.show_view(view)
-    if view == GameView():
-        view.setup()
     arcade.run()
 
 
