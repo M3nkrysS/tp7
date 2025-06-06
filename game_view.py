@@ -40,10 +40,11 @@ class GameView(arcade.View):
         self.score = 0
         self.true_score = 0
         self.score_multiplier = 0
+        self.new_line = True
         with open("High_score_file.txt") as score_file_check_if_empty:
-            full_file = score_file_check_if_empty.read()
+            full_file = score_file_check_if_empty.read(-1)
             if not full_file:
-                with open("High_score_file.txt", "w") as score_file_fill:
+                with open("High_score_file.txt", "a") as score_file_fill:
                     score_file_fill.write("0")
 
         self.enemy_list = None
@@ -178,9 +179,13 @@ class GameView(arcade.View):
                         self.immune_time = time.time()
 
         with open("High_score_file.txt") as score_file_read:
-            if self.score > int(score_file_read.read()):
+            score = score_file_read.readline()
+            best_score = score[-1]
+            if self.score > int(best_score):
                 with open("High_score_file.txt", "a") as score_file_write:
-                    score_file_write.write("\n")
+                    if self.new_line:
+                        score_file_write.write("\n")
+                        self.new_line = False
                     score_file_write.write(str(int(self.score)))
 
     def update_player_speed(self):
