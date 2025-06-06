@@ -3,12 +3,10 @@ from arcade.gui import (
     UIManager,
     UITextureButton,
     UIAnchorLayout,
-    UIView,
     UIGridLayout,
 )
 
 from game_view import GameView
-import game_constants as gc
 
 # Preload textures, because they are mostly used multiple times, so they are not
 # loaded multiple times
@@ -28,7 +26,6 @@ class MenuView(arcade.View):
         grid = UIGridLayout(
             column_count=1,
             row_count=4,
-            size_hint=(0, 0),
             vertical_spacing=40
 
         )

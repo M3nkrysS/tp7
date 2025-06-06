@@ -180,6 +180,7 @@ class GameView(arcade.View):
         with open("High_score_file.txt") as score_file_read:
             if self.score > int(score_file_read.read()):
                 with open("High_score_file.txt", "a") as score_file_write:
+                    score_file_write.write("\n")
                     score_file_write.write(str(int(self.score)))
 
     def update_player_speed(self):
