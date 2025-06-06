@@ -7,11 +7,12 @@ from arcade.gui import (
 )
 
 from game_view import GameView
+import game_constants as gc
 
 # Preload textures, because they are mostly used multiple times, so they are not
 # loaded multiple times
 TEX_RED_BUTTON_NORMAL = arcade.load_texture(":resources:gui_basic_assets/button/red_normal.png")
-TEX_RED_BUTTON_HOVER = arcade.load_texture(":resources:gui_basic_assets/button/red_hover.png")
+TEX_RED_BUTTON_HOVER = arcade.draw_circle_filled(gc.SCREEN_WIDTH / 2, gc.SCREEN_WIDTH / 2, 12, arcade.color.BLUE_YONDER)
 TEX_RED_BUTTON_PRESS = arcade.load_texture(":resources:gui_basic_assets/button/red_press.png")
 
 
@@ -28,7 +29,7 @@ class MenuView(arcade.View):
         # Add a button switch to the other View.
         button = anchor.add(
             UITextureButton(
-                text="Switch to blue view",
+                text="New Game",
                 texture=TEX_RED_BUTTON_NORMAL,
                 texture_hovered=TEX_RED_BUTTON_HOVER,
                 texture_pressed=TEX_RED_BUTTON_PRESS,
@@ -51,7 +52,7 @@ class MenuView(arcade.View):
 
     def on_draw(self):
         # Clear the screen
-        self.clear(color=arcade.uicolor.GREEN_EMERALD)
+        self.clear(color=arcade.uicolor.BLUE_PETER_RIVER)
 
         # Add draw commands that should be below the UI
         # ...
